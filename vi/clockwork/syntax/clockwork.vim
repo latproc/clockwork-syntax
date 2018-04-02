@@ -5,7 +5,7 @@ if exists("b:current_syntax")
 endif
 
 syntax keyword cwKeyword DEFAULTS MACHINE
-syntax keyword cwKeyword STATE ENTER NUMBER SEPARATOR 
+syntax keyword cwKeyword INITIAL STATE ENTER NUMBER SEPARATOR 
 syntax keyword cwKeyword SET LOG 
 syntax keyword cwKeyword PROPERTY DEFINE COLLECT FROM TEST EXECUTE SPAWN RUN
 syntax keyword cwKeyword CALL TRIM LINE OF USING MATCH IN REPLACE WITH INTERPRET
