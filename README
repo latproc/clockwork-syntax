@@ -1,3 +1,51 @@
-Clockwork syntax highlighting support
+Clockwork syntax highlighting for Vim and Neovim
+================================================
 
-This project provides various clockwork language syntax helpers.
+Syntax support for the Clockwork / LPC language used by latproc controllers:
+`*.cw` and `*.lpc` files.
+
+Install
+-------
+
+Straight from the internet:
+
+    curl -fsSL https://raw.githubusercontent.com/latproc/clockwork-syntax/master/install.sh | sh
+
+From a checkout:
+
+    ./install.sh
+
+Either way the runtime files land in a Vim package directory, so nothing in
+`~/.vim/syntax` is touched and no runtimepath has to be edited:
+
+    ~/.vim/pack/clockwork/start/clockwork/
+
+Neovim is pointed at the same package with a symlink when it has a config
+directory of its own.  `--uninstall` removes both.
+
+Layout
+------
+
+    install.sh                              the installer above
+    tools/check-keywords.sh                 diff the syntax against the lexer
+    vi/clockwork/syntax/clockwork.vim       the syntax file
+    vi/clockwork/ftdetect/clockwork.vim     *.cw and *.lpc file type detection
+    vi/clockwork/doc/clockwork.txt          :help clockwork
+
+Keeping up with the language
+----------------------------
+
+`iod/src/cwlang.lpp` in the latproc tree is the authority for what counts as a
+keyword; `cwlang.ypp` supplies the parser token names.  The syntax file is
+compared against the lexer mechanically:
+
+    tools/check-keywords.sh /path/to/iod/src/cwlang.lpp
+
+With no argument it looks for `$LATPROC/iod/src/cwlang.lpp`, then for
+`../latproc/iod/src/cwlang.lpp` beside this repository.  It exits 0 when the
+two keyword sets agree, and 1 with a list of the differences when they do not.
+Run it after any language change, and before committing a syntax update.
+It only compares the lexer-derived groups; `cwBuiltin` and `cwConstant` come
+from the run-time class registry and are checked by hand.
+
+See `:help clockwork` for what each highlight group means.

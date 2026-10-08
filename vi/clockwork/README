@@ -1,0 +1,5 @@
+Clockwork language support for Vim and Neovim.
+
+This directory is a Vim runtime tree.  It is installed as a Vim package by
+../install.sh in the repository root; see the repository README, or run
+:help clockwork, for the full story.

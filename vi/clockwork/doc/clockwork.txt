@@ -1,0 +1,86 @@
+*clockwork.txt*  Clockwork language syntax highlighting  *clockwork* *cw-syntax*
+
+Clockwork syntax highlighting for Vim and Neovim.                *clockwork.vim*
+
+The language is the Clockwork / LPC language used by latproc controllers, in
+`*.cw` and `*.lpc` files.
+
+==============================================================================
+CONTENTS                                                    *clockwork-contents*
+
+1. Install ........................................ |clockwork-install|
+2. What is highlighted ............................ |clockwork-highlight|
+3. Keeping it in step with the language ........... |clockwork-maintain|
+
+==============================================================================
+1. INSTALL                                                  *clockwork-install*
+
+Installing as a Vim package is the supported path: >
+
+    curl -fsSL https://raw.githubusercontent.com/latproc/clockwork-syntax/master/install.sh | sh
+
+That copies the runtime files to: >
+
+    ~/.vim/pack/clockwork/start/clockwork/
+
+and points Neovim at the same package when it has a config directory of its
+own.  Nothing outside `~/.vim` and `~/.config/nvim` is written and no sudo is
+needed.  From a checkout of this repository, run `./install.sh` instead; add
+`--uninstall` to remove it again.
+
+The files are picked up by file type, so `*.cw` and `*.lpc` highlight with no
+configuration.  In a buffer that is not detected, or to force it: >
+
+    :set filetype=clockwork
+
+Vim has its own file type for `*.lpc` -- the unrelated LPC (MUD) language --
+and its rule runs before this plugin's.  To stop `.lpc` files coming out in
+Vim's `lpc` syntax, the plugin overrides that file type for `*.lpc`.  If you
+really do edit MUD LPC in the same editor, remove the `*.lpc` autocmd from
+`ftdetect/clockwork.vim`.
+
+==============================================================================
+2. WHAT IS HIGHLIGHTED                                 *clockwork-highlight*
+
+cwKeyword       Clockwork keywords, one entry per keyword rule in the lexer.
+cwType          Type words: 16BIT, 32BIT, FLOAT, FLOAT32, INTEGER, STRING,
+                SYMBOL.
+cwConstant      Run-time values from the symbol table: NOW, CLOCK, SECONDS,
+                MINUTE, HOUR, DAY, MONTH, YEAR, TIMESTAMP, UTCTIMESTAMP,
+                ISOTIMESTAMP, LOCALTIME, UTCTIME, TIMEZONE, TIMESEQ, RANDOM,
+                RANDOMSEED, TRUE, FALSE.
+cwBuiltin       Built-in machine classes and reserved instance and option
+                names -- ANALOGINPUT, COUNTER, POINT, LIST, REFERENCE, TIMER,
+                SYSTEM, and so on.  Not a lexer list: see the comment in the
+                syntax file.
+cwDeprecated    PRIVATE, which the lexer still accepts but reports as an
+                error.  Use LOCAL instead.
+cwOperator      The symbolic operators: `+ - * / % & | ^ ~ ! < > = <= >= ==
+                != := && || <<`.
+cwComment       `#` to end of line, and `/* ... */` across lines.
+cwString        Double quoted strings, with the usual escapes.
+cwPattern       Backtick regular expression patterns, as used by MONITORS,
+                IGNORES and COPY.
+cwJsonExpr      A `${ ... }` JSON expression.
+cwNumber        Integers, 0x hex and floating point literals.
+cwPlugin        A `%BEGIN_PLUGIN` ... `%END_PLUGIN` block, which holds C++
+                source.
+
+Keywords are case sensitive and upper case.  Lower case words (`on`, `off`,
+`idle`, ...) are state and option names, not keywords, so they are not
+highlighted as keywords.
+
+==============================================================================
+3. KEEPING IT IN STEP WITH THE LANGUAGE                     *clockwork-maintain*
+
+iod/src/cwlang.lpp in the latproc tree is the authority for the language.  The
+syntax file is compared against it mechanically: >
+
+    tools/check-keywords.sh /path/to/iod/src/cwlang.lpp
+
+With no argument the script looks for `$LATPROC/iod/src/cwlang.lpp` and then
+for `../latproc/iod/src/cwlang.lpp` beside this repository.  It exits 0 when
+the keyword sets agree and 1 when they do not, listing the words that differ.
+Run it after any language change and before committing a syntax update.
+
+ vim:tw=78:ts=8:ft=help:norl:
